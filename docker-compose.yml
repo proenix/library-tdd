@@ -1,0 +1,59 @@
+version: "3"
+services:
+  app:
+    build:
+      context: ./docker/app
+      dockerfile: Dockerfile
+      args:
+        VERSION: "main"
+    image: library-tdd-app:dev-api
+    environment:
+      MYSQL_DB_NAME: library-tdd
+      MYSQL_DB_USER: library-tdd
+      MYSQL_DB_PASSWORD: password
+      MYSQL_DB_HOST: library-tdd.library-tdd_library-tdd
+      YII_DEBUG: "true"
+      YII_ENV: dev
+    restart: always
+    tty: true
+    working_dir: /app
+    volumes:
+      - ./:/app/
+    networks:
+      - library-tdd
+      - web
+    depends_on:
+      - db
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.library-tdd.rule=Host(`local-libr.proenix.pl`)"
+      - "traefik.http.routers.library-tdd.entrypoints=web"
+
+  db:
+    image: mysql:5.7.30
+    restart: always
+    tty: true
+    # ports:
+    #    - "3306:3306"
+    environment:
+      MYSQL_DATABASE: library-tdd
+      MYSQL_ROOT_PASSWORD: library-tdd
+      MYSQL_USER: library-tdd
+      MYSQL_PASSWORD: library-tdd
+    volumes:
+      - dbdata:/var/lib/mysql/
+      - ./docker/db/mysql/my.cnf:/etc/mysql/my.cnf
+    networks:
+      - library-tdd
+
+networks:
+  library-tdd:
+    external: false
+  web:
+    external: true
+
+volumes:
+  dbdata:
+    driver: local
+  appdata:
+    driver: local
