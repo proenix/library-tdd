@@ -27,7 +27,7 @@ class LoginFormTest extends \Codeception\Test\Unit
     public function testLoginWrongPassword()
     {
         $this->model = new LoginForm([
-            'username' => 'demo',
+            'username' => 'administrator',
             'password' => 'wrong_password',
         ]);
 
@@ -36,11 +36,11 @@ class LoginFormTest extends \Codeception\Test\Unit
         expect($this->model->errors)->hasKey('password');
     }
 
-    public function testLoginCorrect()
+    public function testLoginCorrectUsername()
     {
         $this->model = new LoginForm([
-            'username' => 'demo',
-            'password' => 'demo',
+            'username' => 'administrator',
+            'password' => 'administrator',
         ]);
 
         expect_that($this->model->login());
@@ -48,4 +48,15 @@ class LoginFormTest extends \Codeception\Test\Unit
         expect($this->model->errors)->hasntKey('password');
     }
 
+    public function testLoginCorrectEmail()
+    {
+        $this->model = new LoginForm([
+            'username' => 'test@test.test',
+            'password' => 'administrator',
+        ]);
+
+        expect_that($this->model->login());
+        expect_not(\Yii::$app->user->isGuest);
+        expect($this->model->errors)->hasntKey('password');
+    }
 }

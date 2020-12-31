@@ -11,9 +11,11 @@ services:
       MYSQL_DB_NAME: library-tdd
       MYSQL_DB_USER: library-tdd
       MYSQL_DB_PASSWORD: password
-      MYSQL_DB_HOST: library-tdd.library-tdd_library-tdd
+      MYSQL_DB_HOST: library-tdd_db_1.library-tdd_library-tdd
+      MYSQL_DB_HOST_TEST: library-tdd_db_test_1.library-tdd_library-tdd
       YII_DEBUG: "true"
       YII_ENV: dev
+      PHP_ENABLE_XDEBUG: 1
     restart: always
     tty: true
     working_dir: /app
@@ -26,7 +28,7 @@ services:
       - db
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.library-tdd.rule=Host(`local-libr.proenix.pl`)"
+      - "traefik.http.routers.library-tdd.rule=Host(`local-lib.proenix.pl`)"
       - "traefik.http.routers.library-tdd.entrypoints=web"
 
   db:
@@ -37,11 +39,28 @@ services:
     #    - "3306:3306"
     environment:
       MYSQL_DATABASE: library-tdd
-      MYSQL_ROOT_PASSWORD: library-tdd
+      MYSQL_ROOT_PASSWORD: password
       MYSQL_USER: library-tdd
-      MYSQL_PASSWORD: library-tdd
+      MYSQL_PASSWORD: password
     volumes:
       - dbdata:/var/lib/mysql/
+      - ./docker/db/mysql/my.cnf:/etc/mysql/my.cnf
+    networks:
+      - library-tdd
+
+  db_test:
+    image: mysql:5.7.30
+    restart: always
+    tty: true
+    # ports:
+    #    - "3306:3306"
+    environment:
+      MYSQL_DATABASE: library-tdd
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: library-tdd
+      MYSQL_PASSWORD: password
+    volumes:
+      - dbdata_test:/var/lib/mysql/
       - ./docker/db/mysql/my.cnf:/etc/mysql/my.cnf
     networks:
       - library-tdd
@@ -54,6 +73,8 @@ networks:
 
 volumes:
   dbdata:
+    driver: local
+  dbdata_test:
     driver: local
   appdata:
     driver: local
