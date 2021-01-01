@@ -32,9 +32,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <?php $form = ActiveForm::begin(['id' => 'contact-form']); ?>
 
-                <?= $form->field($model, 'name')->textInput(['autofocus' => true]) ?>
+                <?php if (Yii::$app->user->isGuest) {
+                    echo $form->field($model, 'name')->textInput(['autofocus' => true]);
 
-                <?= $form->field($model, 'email') ?>
+                    echo $form->field($model, 'email');
+                } ?>
 
                 <?= $form->field($model, 'subject') ?>
 

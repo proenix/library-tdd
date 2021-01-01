@@ -26,12 +26,12 @@ class SiteController extends Controller
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['request-password-reset', 'reset-password', 'login', 'error', 'index', 'contact', 'about'],
+                        'actions' => ['request-password-reset', 'reset-password', 'login', 'error', 'index', 'contact', 'about', 'captcha'],
                         'allow' => true,
                         'roles' => ['?'],
                     ],
                     [
-                        'actions' => ['logout', 'error', 'index', 'contact', 'about'],
+                        'actions' => ['logout', 'error', 'index', 'contact', 'about', 'captcha'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
