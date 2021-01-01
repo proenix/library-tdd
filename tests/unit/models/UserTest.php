@@ -32,4 +32,21 @@ class UserTest extends \Codeception\Test\Unit
         expect_that($user->validatePassword('administrator'));
         expect_not($user->validatePassword('123456'));
     }
+
+    /**
+     * @depends testFindUserByUsername
+     */
+    public function testByPasswordResetToken()
+    {
+        $user = User::findByUsername('administrator');
+        $user->generatePasswordResetToken();
+        $user->save(false);
+
+        $token = $user->password_reset_token;
+
+        expect_that(!empty($token));
+
+        $user = User::findByPasswordResetToken($token);
+        expect_that($user->username == 'administrator');
+    }
 }
