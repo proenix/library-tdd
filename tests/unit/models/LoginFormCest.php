@@ -2,18 +2,19 @@
 
 namespace tests\unit\models;
 
+use UnitTester;
 use app\models\LoginForm;
 
-class LoginFormTest extends \Codeception\Test\Unit
+class LoginFormCest
 {
     private $model;
 
-    protected function _after()
+    protected function _after(UnitTester $I)
     {
         \Yii::$app->user->logout();
     }
 
-    public function testLoginNoUser()
+    public function testLoginNoUser(UnitTester $I)
     {
         $this->model = new LoginForm([
             'username' => 'not_existing_username',
@@ -24,7 +25,7 @@ class LoginFormTest extends \Codeception\Test\Unit
         expect_that(\Yii::$app->user->isGuest);
     }
 
-    public function testLoginWrongPassword()
+    public function testLoginWrongPassword(UnitTester $I)
     {
         $this->model = new LoginForm([
             'username' => 'administrator',
@@ -36,7 +37,7 @@ class LoginFormTest extends \Codeception\Test\Unit
         expect($this->model->errors)->hasKey('password');
     }
 
-    public function testLoginCorrectUsername()
+    public function testLoginCorrectUsername(UnitTester $I)
     {
         $this->model = new LoginForm([
             'username' => 'administrator',

@@ -2,17 +2,13 @@
 
 namespace tests\unit\models;
 
+use UnitTester;
 use app\models\ContactForm;
 use yii\mail\MessageInterface;
 
-class ContactFormTest extends \Codeception\Test\Unit
+class ContactFormCest
 {
-    /**
-     * @var \UnitTester
-     */
-    public $tester;
-
-    public function testEmailIsSentOnContact()
+    public function testEmailIsSentOnContact(UnitTester $I)
     {
         $model = new ContactForm();
 
@@ -27,10 +23,10 @@ class ContactFormTest extends \Codeception\Test\Unit
         expect_that($model->contact('admin@example.com'));
 
         // using Yii2 module actions to check email was sent
-        $this->tester->seeEmailIsSent();
+        $I->seeEmailIsSent();
 
         /** @var MessageInterface $emailMessage */
-        $emailMessage = $this->tester->grabLastSentEmail();
+        $emailMessage = $I->grabLastSentEmail();
         expect('valid email is sent', $emailMessage)->isInstanceOf('yii\mail\MessageInterface');
         expect($emailMessage->getTo())->hasKey('admin@example.com');
         expect($emailMessage->getFrom())->hasKey('noreply@example.com');
